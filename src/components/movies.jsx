@@ -12,7 +12,8 @@ import {
 } from '@material-ui/core';
 import { getMovies } from '../services/fakeMovieService';
 import Alert from '@material-ui/lab/Alert';
-import { FavoriteBorder } from '@material-ui/icons';
+import Like from './Like';
+import Paginations from './pagination';
 
 const useStyles = makeStyles({
   table: {
@@ -30,12 +31,28 @@ const Movies = () => {
   const [movies, setMovies] = useState({
     getMovie: getMovies(),
   });
+  const [page, setPageSize] = useState({
+    size: 4,
+  });
 
+  const handlePageChange = (page) => {
+    console.log('page changed!!', page);
+  };
+
+  // for remove
   const handleDelete = (id) => {
     const updatedMovies = movies.getMovie.filter((item) => item._id !== id);
     setMovies({ getMovie: updatedMovies });
   };
   const getLength = movies.getMovie.length;
+
+  const handleLike = (item) => {
+    const movieLiked = [...movies.getMovie];
+    const index = movieLiked.indexOf(item);
+    movieLiked[index] = { ...movieLiked[index] };
+    movieLiked[index].liked = !movieLiked[index].liked;
+    setMovies({ getMovie: movieLiked });
+  };
 
   const classes = useStyles();
 
@@ -63,7 +80,7 @@ const Movies = () => {
                 <TableCell>{item.numberInStock}</TableCell>
                 <TableCell>{item.dailyRentalRate}</TableCell>
                 <TableCell size='small'>
-                  <FavoriteBorder />
+                  <Like liked={item.liked} onLiked={() => handleLike(item)} />
                 </TableCell>
                 <TableCell align='center'>
                   <Button
@@ -78,6 +95,11 @@ const Movies = () => {
             ))}
           </TableBody>
         </Table>
+        <Paginations
+          totalCount={getLength}
+          pageSize={page.size}
+          onPageChange={handlePageChange}
+        />
       </TableContainer>
     </div>
   );
