@@ -14,6 +14,7 @@ import { getMovies } from '../services/fakeMovieService';
 import Alert from '@material-ui/lab/Alert';
 import Like from './Like';
 import Paginations from './pagination';
+import { Paginate } from '../utils/Paginate';
 
 const useStyles = makeStyles({
   table: {
@@ -31,13 +32,9 @@ const Movies = () => {
   const [movies, setMovies] = useState({
     getMovie: getMovies(),
   });
-  const [page, setPageSize] = useState({
-    size: 4,
-  });
 
-  const handlePageChange = (page) => {
-    console.log('page changed!!', page);
-  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // for remove
   const handleDelete = (id) => {
@@ -54,10 +51,24 @@ const Movies = () => {
     setMovies({ getMovie: movieLiked });
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, getLength - page * rowsPerPage);
+
   const classes = useStyles();
 
   if (getLength === 0)
     return <Alert severity='error'>There are No Movies in Database</Alert>;
+
+  const PaginateMovies = Paginate(movies.getMovie, page, rowsPerPage);
 
   return (
     <div>
@@ -73,7 +84,7 @@ const Movies = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {movies.getMovie.map((item) => (
+            {PaginateMovies.map((item) => (
               <TableRow key={item._id}>
                 <TableCell>{item.title}</TableCell>
                 <TableCell>{item.genre.name}</TableCell>
@@ -93,12 +104,20 @@ const Movies = () => {
                 </TableCell>
               </TableRow>
             ))}
+
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 68 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
           </TableBody>
         </Table>
         <Paginations
           totalCount={getLength}
-          pageSize={page.size}
-          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          changeRow={handleChangeRowsPerPage}
         />
       </TableContainer>
     </div>

@@ -1,28 +1,19 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Pagination from '@material-ui/lab/Pagination';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      marginTop: theme.spacing(4),
-      marginBottom: theme.spacing(5),
-    },
-  },
-}));
+import TablePagination from '@material-ui/core/TablePagination';
 
 const Paginations = (props) => {
-  const classes = useStyles();
+  // const pageCount = Math.ceil(props.totalCount / props.pageSize);
 
-  const pageCount = Math.ceil(props.totalCount / props.pageSize);
   return (
-    <div className={classes.root}>
-      <Pagination
-        count={pageCount}
-        color='primary'
-        onChange={(event, pageNum) => props.onPageChange(pageNum)}
-      />
-    </div>
+    <TablePagination
+      rowsPerPageOptions={[5, 10, 25]}
+      component='div'
+      count={props.totalCount}
+      rowsPerPage={props.rowsPerPage}
+      page={props.page}
+      onChangePage={props.onPageChange}
+      onChangeRowsPerPage={props.changeRow}
+    />
   );
 };
 
