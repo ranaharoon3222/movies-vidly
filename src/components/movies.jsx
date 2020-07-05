@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Table,
@@ -15,6 +15,7 @@ import Alert from '@material-ui/lab/Alert';
 import Like from './Like';
 import Paginations from './pagination';
 import { Paginate } from '../utils/Paginate';
+import TableSearch from './tableSearch';
 
 const useStyles = makeStyles({
   table: {
@@ -33,15 +34,14 @@ const Movies = () => {
     getMovie: getMovies(),
   });
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [search, setSearch] = useState('');
 
+  const [filterMovie, setFilterMovie] = useState([]);
   // for remove
   const handleDelete = (id) => {
     const updatedMovies = movies.getMovie.filter((item) => item._id !== id);
     setMovies({ getMovie: updatedMovies });
   };
-  const getLength = movies.getMovie.length;
 
   const handleLike = (item) => {
     const movieLiked = [...movies.getMovie];
@@ -50,6 +50,31 @@ const Movies = () => {
     movieLiked[index].liked = !movieLiked[index].liked;
     setMovies({ getMovie: movieLiked });
   };
+
+  const handleInputChange = (event) => {
+    setSearch(event.target.value);
+  };
+
+  useEffect(() => {
+    setFilterMovie(
+      movies.getMovie.filter(
+        (movie) =>
+          movie.genre.name.toLowerCase().includes(search.toLowerCase()) ||
+          movie.title.toLowerCase().includes(search.toLowerCase()) ||
+          movie.numberInStock
+            .toString()
+            .toLowerCase()
+            .includes(search.toLowerCase())
+      )
+    );
+  }, [search, movies.getMovie]);
+
+  const getLength = filterMovie.length;
+
+  // table pagination
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -61,19 +86,20 @@ const Movies = () => {
   };
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, getLength - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, getLength - page * rowsPerPage); //  5, 28 - 5 * 5 = 4
+
+  // table pagination
+
+  const PaginateMovies = Paginate(filterMovie, page, rowsPerPage);
 
   const classes = useStyles();
-
-  if (getLength === 0)
-    return <Alert severity='error'>There are No Movies in Database</Alert>;
-
-  const PaginateMovies = Paginate(movies.getMovie, page, rowsPerPage);
 
   return (
     <div>
       <Alert severity='info'>There are {getLength} Movies in Database</Alert>
       <TableContainer component={Paper}>
+        <TableSearch onInputChange={handleInputChange} />
+
         <Table className={classes.table} aria-label='simple table'>
           <TableHead>
             <TableRow>
