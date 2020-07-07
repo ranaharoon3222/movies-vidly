@@ -11,6 +11,7 @@ const tableSearch = (props) => {
         onChange={props.onInputChange}
         fullWidth
         variant='filled'
+        value={props.searchValue}
       />
     </div>
   );
