@@ -52,6 +52,7 @@ const Movies = () => {
   // ===== get input Value =====//
   const handleInputChange = (event) => {
     setSearch(event.target.value);
+    setPage(0);
   };
   // ===== get input Value =====//
 
@@ -105,7 +106,7 @@ const Movies = () => {
           movie.numberInStock.toString().includes(search.toLowerCase())
       )
     );
-    setPage(0);
+    // setPage(0);
   }, [search, movies.getMovie]);
 
   // table pagination

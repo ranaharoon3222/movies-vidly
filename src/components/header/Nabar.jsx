@@ -53,7 +53,7 @@ const Nabar = () => {
               >
                 Home
               </Link>
-            </ListItem>{' '}
+            </ListItem>
             <ListItem>
               <Link
                 to='/movies'
