@@ -13,17 +13,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// function ListItemLink(props) {
-//   return <ListItem button component='a' {...props} />;
-// }
-
 const TableFilter = ({
   genre,
   onSelected,
   textProperty,
   valueProperty,
   selectedGenre,
-  allGenres,
 }) => {
   const classes = useStyles();
 

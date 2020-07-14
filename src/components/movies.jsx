@@ -1,33 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Grid,
-} from '@material-ui/core';
+import { TableContainer, Paper, Grid } from '@material-ui/core';
 import { getMovies } from '../services/fakeMovieService';
 import { getGenres } from '../services/fakeGenreService';
 import Alert from '@material-ui/lab/Alert';
-import Like from './Like';
 import Paginations from './pagination';
 import { Paginate } from '../utils/Paginate';
 import TableSearch from './tableSearch';
 import TableFilter from './tableFilter';
+import MoviesTable from './moviesTable';
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 450,
-  },
-  Bold: {
-    fontWeight: '700',
-    fontSize: '22px',
-  },
   margin: {
     marginTop: '20px !important',
   },
@@ -104,7 +87,6 @@ const Movies = () => {
   // ===== Pagination Login  =====//
 
   useEffect(() => {
-    console.log('genere useeffect render');
     setSearch('');
     const generes = [
       { name: 'All Generes', _id: 'All_Generes' },
@@ -115,7 +97,6 @@ const Movies = () => {
   }, []);
 
   useEffect(() => {
-    console.log('movie useeffect render');
     setFilterMovie(
       movies.getMovie.filter(
         (movie) =>
@@ -152,47 +133,12 @@ const Movies = () => {
               onInputChange={handleInputChange}
               searchValue={search}
             />
-            <Table className={classes.table} aria-label='simple table'>
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.Bold}>Title</TableCell>
-                  <TableCell className={classes.Bold}> Genre</TableCell>
-                  <TableCell className={classes.Bold}>Stock</TableCell>
-                  <TableCell className={classes.Bold}>Rate</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {PaginateMovies.map((item) => (
-                  <TableRow key={item._id}>
-                    <TableCell>{item.title}</TableCell>
-                    <TableCell>{item.genre.name}</TableCell>
-                    <TableCell>{item.numberInStock}</TableCell>
-                    <TableCell>{item.dailyRentalRate}</TableCell>
-                    <TableCell size='small'>
-                      <Like
-                        liked={item.liked}
-                        onLiked={() => handleLike(item)}
-                      />
-                    </TableCell>
-                    <TableCell align='center'>
-                      <Button
-                        variant='contained'
-                        color='secondary'
-                        onClick={() => handleDelete(item._id)}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 68 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+            <MoviesTable
+              PaginateMovies={PaginateMovies}
+              handleLike={handleLike}
+              handleDelete={handleDelete}
+              emptyRows={emptyRows}
+            />
             <Paginations
               totalCount={getLength}
               rowsPerPage={rowsPerPage}

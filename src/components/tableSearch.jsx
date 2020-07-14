@@ -2,16 +2,16 @@ import React from 'react';
 
 import TextField from '@material-ui/core/TextField';
 
-const tableSearch = (props) => {
+const tableSearch = ({ onInputChange, searchValue }) => {
   return (
     <div>
       <TextField
         id='standard-basic'
         label='Search'
-        onChange={props.onInputChange}
+        onChange={onInputChange}
         fullWidth
         variant='filled'
-        value={props.searchValue}
+        value={searchValue}
       />
     </div>
   );
