@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { TableContainer, Paper, Grid } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import { getMovies } from '../services/fakeMovieService';
 import { getGenres } from '../services/fakeGenreService';
-import Alert from '@material-ui/lab/Alert';
-import Paginations from './pagination';
 import { Paginate } from '../utils/Paginate';
-import TableSearch from './tableSearch';
-import TableFilter from './tableFilter';
-import MoviesTable from './moviesTable';
+import Paginations from './movieFeatures/pagination';
+import TableSearch from './movieFeatures/tableSearch';
+import TableFilter from './movieFeatures/tableFilter';
+import MoviesTable from './movieFeatures/moviesTable';
 
 const useStyles = makeStyles({
   margin: {
