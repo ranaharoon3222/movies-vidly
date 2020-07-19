@@ -1,27 +1,28 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { Container } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 import Navbar from './components/header/Nabar';
 import Customer from './components/routes/Customer';
 import Error from './components/routes/Error';
-import Home from './Home';
 import Rental from './components/routes/Rental';
 import MovieForm from './components/routes/MovieForm';
+import Login from './components/forms/login/Login';
+import Home from './Home';
 
 const App = () => {
   return (
     <div>
+      <CssBaseline />
       <Navbar />
-      <Container>
-        <Switch>
-          <Route path='/rental' component={Rental} />
-          <Route path='/customer' component={Customer} />
-          <Route path='/movies/:id' component={MovieForm} />
-          <Route path='/movies' component={Home} />
-          <Redirect from='/' to='/movies' />
-          <Route path='*' component={Error} />
-        </Switch>
-      </Container>
+      <Switch>
+        <Route path='/login' component={Login} />
+        <Route path='/rental' component={Rental} />
+        <Route path='/customer' component={Customer} />
+        <Route path='/movies/:id' component={MovieForm} />
+        <Route path='/movies' component={Home} />
+        <Redirect exact from='/' to='/movies' />
+        <Route path='*' component={Error} />
+      </Switch>
     </div>
   );
 };

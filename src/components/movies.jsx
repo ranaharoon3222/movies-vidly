@@ -9,6 +9,7 @@ import Paginations from './movieFeatures/pagination';
 import TableSearch from './movieFeatures/tableSearch';
 import TableFilter from './movieFeatures/tableFilter';
 import MoviesTable from './movieFeatures/moviesTable';
+import Layout from './layout/Layout';
 
 const useStyles = makeStyles({
   margin: {
@@ -97,6 +98,7 @@ const Movies = () => {
     setMovies({ getMovie: getMovies() });
   }, []);
 
+  // search
   useEffect(() => {
     setFilterMovie(
       movies.getMovie.filter(
@@ -114,7 +116,7 @@ const Movies = () => {
   const classes = useStyles();
 
   return (
-    <div>
+    <Layout>
       <Alert severity='info'>There are {getLength} Movies in Database</Alert>
       <Grid container={true} spacing={5} className={classes.margin}>
         <Grid item xs={12} md={4}>
@@ -150,7 +152,7 @@ const Movies = () => {
           </TableContainer>
         </Grid>
       </Grid>
-    </div>
+    </Layout>
   );
 };
 

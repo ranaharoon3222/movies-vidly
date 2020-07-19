@@ -6,7 +6,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Link,
+  Button,
 } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
@@ -31,6 +31,29 @@ const useStyles = makeStyles(() => ({
 
 const Nabar = () => {
   const classes = useStyles();
+  const headerMenu = [
+    {
+      navItem: 'Home',
+      path: '/',
+    },
+    {
+      navItem: 'Movies',
+      path: '/movies',
+    },
+    {
+      navItem: 'Customer',
+      path: '/customer',
+    },
+    {
+      navItem: 'Rental',
+      path: '/rental',
+    },
+    {
+      navItem: 'Login',
+      path: '/login',
+    },
+  ];
+
   return (
     <div>
       <AppBar position='static' className={classes.navbar}>
@@ -44,46 +67,13 @@ const Nabar = () => {
             <Menu />
           </IconButton>
           <List component='nav' className={classes.nav}>
-            <ListItem>
-              <Link
-                to='/'
-                color='inherit'
-                component={RouterLink}
-                variant='body2'
-              >
-                Home
-              </Link>
-            </ListItem>
-            <ListItem>
-              <Link
-                to='/movies'
-                color='inherit'
-                component={RouterLink}
-                variant='body2'
-              >
-                Movies
-              </Link>
-            </ListItem>
-            <ListItem>
-              <Link
-                to='/customer'
-                color='inherit'
-                component={RouterLink}
-                variant='body2'
-              >
-                Customer
-              </Link>
-            </ListItem>
-            <ListItem>
-              <Link
-                to='/rental'
-                color='inherit'
-                component={RouterLink}
-                variant='body2'
-              >
-                Rental
-              </Link>
-            </ListItem>
+            {headerMenu.map((item, index) => (
+              <ListItem key={index}>
+                <Button color='inherit' component={RouterLink} to={item.path}>
+                  {item.navItem}
+                </Button>
+              </ListItem>
+            ))}
           </List>
         </Toolbar>
       </AppBar>

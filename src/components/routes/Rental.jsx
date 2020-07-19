@@ -1,10 +1,11 @@
 import React from 'react';
+import Layout from '../layout/Layout';
 
 const Rental = () => {
   return (
-    <div>
+    <Layout>
       <h1>Rental</h1>
-    </div>
+    </Layout>
   );
 };
 
