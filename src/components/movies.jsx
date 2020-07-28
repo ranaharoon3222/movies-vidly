@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { TableContainer, Paper, Grid } from '@material-ui/core';
+import { TableContainer, Paper, Grid, Button } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { getMovies } from '../services/fakeMovieService';
 import { getGenres } from '../services/fakeGenreService';
@@ -10,6 +10,7 @@ import TableSearch from './movieFeatures/tableSearch';
 import TableFilter from './movieFeatures/tableFilter';
 import MoviesTable from './movieFeatures/moviesTable';
 import Layout from './layout/Layout';
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles({
   margin: {
@@ -133,6 +134,15 @@ const Movies = () => {
           </Paper>
         </Grid>
         <Grid item xs={12} md={8}>
+          <Button
+            color='primary'
+            component={RouterLink}
+            variant='contained'
+            to={'/movies/add-movie'}
+            style={{ margin: '20px 0' }}
+          >
+            Add Movie
+          </Button>
           <TableContainer component={Paper}>
             <TableSearch
               onInputChange={handleInputChange}

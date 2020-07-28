@@ -12,6 +12,7 @@ import { yupResolver } from '@hookform/resolvers';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import Input from '../common/Input';
+import { v4 as uuidv4 } from 'uuid';
 
 const schema = yup.object().shape({
   title: yup.string().required(),
@@ -21,7 +22,7 @@ const schema = yup.object().shape({
   }),
   numberInStock: yup.number().positive().required(),
   dailyRentalRate: yup.number().positive().required(),
-  editDate: yup.date(),
+  Date: yup.date(),
 });
 
 const MovieForm = ({ history }) => {
@@ -31,25 +32,30 @@ const MovieForm = ({ history }) => {
   const { register, handleSubmit, control, errors } = useForm({
     resolver: yupResolver(schema),
   });
-  const { id } = useParams();
 
-  const index = movies.findIndex((item) => item._id === id);
-  const { dailyRentalRate, numberInStock, title, genre } = movies[index];
+  const { id } = useParams();
+  const index = movies.findIndex((item) => item._id.toString() === id);
+
+  const { dailyRentalRate, numberInStock, title, genre } =
+    movies[index] || movies;
 
   const doSubmit = (data) => {
     const newMovies = movies;
-    newMovies[index] = Object.assign(movies[index], data);
+    if (index !== -1) {
+      newMovies[index] = Object.assign(movies[index], data);
+    } else {
+      newMovies.unshift({
+        ...data,
+        _id: uuidv4(),
+      });
+    }
     setMovies(newMovies);
     history.push('/movies');
   };
+
   return (
     <Layout>
-      <Grid
-        container
-        spacing={0}
-        alignItems='center'
-        // className={classes.gContainer}
-      >
+      <Grid container spacing={0} alignItems='center'>
         <Grid item xs={6}>
           <form noValidate autoComplete='off' onSubmit={handleSubmit(doSubmit)}>
             <Typography variant='h4'>You are Editing : {title}</Typography>
@@ -58,14 +64,16 @@ const MovieForm = ({ history }) => {
               name='genre._id'
               inputRef={register}
               error={errors._id}
-              defaultValue={genre._id}
+              defaultValue={
+                (typeof genre !== 'undefined' && genre._id) || uuidv4()
+              }
               type='hidden'
             />
             <Input
-              name='editDate'
+              name='Date'
               inputRef={register}
-              error={errors.editDate}
-              defaultValue={new Date()}
+              error={errors.Date}
+              defaultValue={new Date() || ''}
               type='hidden'
             />
             <Input
@@ -74,7 +82,7 @@ const MovieForm = ({ history }) => {
               inputRef={register}
               error={errors.title}
               autoFocus={true}
-              defaultValue={title}
+              defaultValue={title || ''}
             />
             <Input
               name='numberInStock'
@@ -82,7 +90,7 @@ const MovieForm = ({ history }) => {
               inputRef={register}
               error={errors.numberInStock}
               type='number'
-              defaultValue={numberInStock}
+              defaultValue={numberInStock || ''}
             />
 
             <Controller
@@ -90,7 +98,9 @@ const MovieForm = ({ history }) => {
               as={Select}
               control={control}
               fullWidth
-              defaultValue={genre.name}
+              defaultValue={
+                (typeof genre !== 'undefined' && genre.name) || getGenre[0].name
+              }
               variant='outlined'
             >
               {getGenre.map((item) => (
@@ -105,7 +115,7 @@ const MovieForm = ({ history }) => {
               inputRef={register}
               error={errors.dailyRentalRate}
               type='number'
-              defaultValue={dailyRentalRate}
+              defaultValue={dailyRentalRate || ''}
             />
 
             <Button variant='contained' color='primary' fullWidth type='submit'>
