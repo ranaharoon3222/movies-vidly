@@ -7,6 +7,7 @@ import Error from './components/routes/Error';
 import Rental from './components/routes/Rental';
 import MovieForm from './components/routes/MovieForm';
 import Login from './components/forms/login/Login';
+import Register from './components/forms/register/Register';
 import Home from './Home';
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
       <Navbar />
       <Switch>
         <Route path='/login' component={Login} />
+        <Route path='/register' component={Register} />
         <Route path='/rental' component={Rental} />
         <Route path='/customer' component={Customer} />
         <Route path='/movies/:id' component={MovieForm} />

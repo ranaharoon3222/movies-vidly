@@ -22,6 +22,8 @@ const Movies = () => {
     getMovie: [],
   });
 
+  console.log(movies.getMovie);
+
   const [search, setSearch] = useState('');
   const [filterMovie, setFilterMovie] = useState([]);
   const [genre, setGenre] = useState([]);

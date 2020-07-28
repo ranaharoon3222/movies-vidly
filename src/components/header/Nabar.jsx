@@ -52,6 +52,10 @@ const Nabar = () => {
       navItem: 'Login',
       path: '/login',
     },
+    {
+      navItem: 'Register',
+      path: '/register',
+    },
   ];
 
   return (
