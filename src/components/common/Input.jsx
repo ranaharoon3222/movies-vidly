@@ -1,20 +1,19 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 
-const Input = ({ name, label, value, error, onChange }) => {
+// const Input = ({ name, label, value, error, onChange }) => {
+const Input = ({ name, error, ...rest }) => {
   return (
     <div>
       <TextField
+        {...rest}
         id={name}
-        onChange={onChange}
-        value={value}
-        label={label}
+        name={name}
         variant='outlined'
         fullWidth
         margin='normal'
-        name={name}
         error={error && true}
-        helperText={error && error}
+        helperText={error && error.message}
       />
     </div>
   );
