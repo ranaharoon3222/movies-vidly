@@ -1,79 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../layout/Layout';
-import { getMovies } from '../../services/fakeMovieService';
+import { getMovie, saveMovie } from '../../services/fakeMovieService';
 import { getGenres } from '../../services/fakeGenreService';
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import Input from '../common/Input';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 
 const schema = yup.object().shape({
   title: yup.string().required(),
-  genre: yup.object().shape({
-    name: yup.string().required(),
-    _id: yup.string().required(),
-  }),
+  genreId: yup.string().required(),
   numberInStock: yup.number().positive().required(),
-  dailyRentalRate: yup.number().positive().required(),
-  Date: yup.date(),
+  dailyRentalRate: yup.number().positive().min(0).max(10).required(),
+  _id: yup.string(),
 });
 
 const MovieForm = ({ history }) => {
-  const [movies, setMovies] = useState(getMovies());
-  const getGenre = getGenres();
+  const [data, setData] = useState({
+    _id: '',
+    title: '',
+    genreId: '',
+    numberInStock: '',
+    dailyRentalRate: '',
+  });
+  const [Genre, setGenre] = useState([]);
 
-  const { register, handleSubmit, control, errors } = useForm({
+  const { register, handleSubmit, control, errors, reset } = useForm({
     resolver: yupResolver(schema),
+    reValidateMode: 'onBlur',
+    defaultValues: {
+      genreId: '',
+    },
   });
 
   const { id } = useParams();
-  const index = movies.findIndex((item) => item._id.toString() === id);
 
-  const { dailyRentalRate, numberInStock, title, genre } =
-    movies[index] || movies;
+  const handleChange = (e) => {
+    const updatedValue = { ...data };
+    updatedValue[e.target.name] = e.target.value;
+    setData(updatedValue);
+  };
 
-  const doSubmit = (data) => {
-    const newMovies = movies;
-    if (index !== -1) {
-      newMovies[index] = Object.assign(movies[index], data);
-    } else {
-      newMovies.unshift({
-        ...data,
-        _id: uuidv4(),
-      });
-    }
-    setMovies(newMovies);
+  useEffect(() => {
+    const genres = getGenres();
+    setGenre(genres);
+
+    const movieId = id;
+    if (movieId === 'add-movie') return;
+
+    const movie = getMovie(movieId);
+    if (!movie) return history.replace('/not-found');
+
+    setData(mapToViewModel(movie));
+  }, [history, id]);
+
+  const mapToViewModel = (movie) => {
+    return {
+      _id: movie._id,
+      genreId: movie.genre._id,
+      title: movie.title,
+      numberInStock: movie.numberInStock,
+      dailyRentalRate: movie.dailyRentalRate,
+    };
+  };
+
+  const doSubmit = (Formdata) => {
+    saveMovie(Formdata);
     history.push('/movies');
   };
+
+  useEffect(() => {
+    reset({ genreId: data.genreId });
+  }, [data.genreId, reset]);
 
   return (
     <Layout>
       <Grid container spacing={0} alignItems='center'>
         <Grid item xs={6}>
           <form noValidate autoComplete='off' onSubmit={handleSubmit(doSubmit)}>
-            <Typography variant='h4'>You are Editing : {title}</Typography>
-
+            <Typography variant='h4'>You are Editing : {data.title}</Typography>
             <Input
-              name='genre._id'
+              name='_id'
               inputRef={register}
               error={errors._id}
-              defaultValue={
-                (typeof genre !== 'undefined' && genre._id) || uuidv4()
-              }
-              type='hidden'
-            />
-            <Input
-              name='Date'
-              inputRef={register}
-              error={errors.Date}
-              defaultValue={new Date() || ''}
+              value={data._id}
               type='hidden'
             />
             <Input
@@ -82,7 +99,8 @@ const MovieForm = ({ history }) => {
               inputRef={register}
               error={errors.title}
               autoFocus={true}
-              defaultValue={title || ''}
+              value={data.title}
+              onChange={handleChange}
             />
             <Input
               name='numberInStock'
@@ -90,32 +108,39 @@ const MovieForm = ({ history }) => {
               inputRef={register}
               error={errors.numberInStock}
               type='number'
-              defaultValue={numberInStock || ''}
+              value={data.numberInStock}
+              onChange={handleChange}
             />
 
             <Controller
-              name='genre.name'
-              as={Select}
+              name='genreId'
               control={control}
-              fullWidth
-              defaultValue={
-                (typeof genre !== 'undefined' && genre.name) || getGenre[0].name
+              as={
+                <Select>
+                  <MenuItem value=''>
+                    <em>None</em>
+                  </MenuItem>
+                  {Genre.map((item) => (
+                    <MenuItem value={item._id} key={item._id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                </Select>
               }
+              displayEmpty
+              defaultValue={data.genreId}
+              fullWidth
               variant='outlined'
-            >
-              {getGenre.map((item) => (
-                <MenuItem value={item.name} key={item._id}>
-                  {item.name}
-                </MenuItem>
-              ))}
-            </Controller>
+              error={errors.genreId && true}
+            />
             <Input
               name='dailyRentalRate'
               label='Rate'
               inputRef={register}
               error={errors.dailyRentalRate}
               type='number'
-              defaultValue={dailyRentalRate || ''}
+              value={data.dailyRentalRate}
+              onChange={handleChange}
             />
 
             <Button variant='contained' color='primary' fullWidth type='submit'>

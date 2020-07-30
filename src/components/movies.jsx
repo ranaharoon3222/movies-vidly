@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { TableContainer, Paper, Grid, Button } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { getMovies } from '../services/fakeMovieService';
+import { getMovies, deleteMovie } from '../services/fakeMovieService';
 import { getGenres } from '../services/fakeGenreService';
 import { Paginate } from '../utils/Paginate';
 import Paginations from './movieFeatures/pagination';
@@ -22,8 +22,6 @@ const Movies = () => {
   const [movies, setMovies] = useState({
     getMovie: [],
   });
-
-  console.log(movies.getMovie);
 
   const [search, setSearch] = useState('');
   const [filterMovie, setFilterMovie] = useState([]);
@@ -50,6 +48,7 @@ const Movies = () => {
   const handleDelete = (id) => {
     const updatedMovies = movies.getMovie.filter((item) => item._id !== id);
     setMovies({ getMovie: updatedMovies });
+    deleteMovie(id);
   };
   // ===== Delete Movie Row =====//
 
