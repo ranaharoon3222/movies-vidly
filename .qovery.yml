@@ -3,6 +3,11 @@ application:
   name: "movies-vidly"
   project: "test"
   organization: "QoveryCommunity"
+  storage:
+  - name: "hmm"
+    size: "10"
+    type: "ssd"
+    mount_point: "/mnt/hmm"
 routers:
 - name: "main-movies-vidly"
   routes:
