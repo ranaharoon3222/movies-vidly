@@ -10,7 +10,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "elliptic": "^6.5.3",
+    "elliptic": "^6.5.4",
     "joi-browser": "^13.4.0",
     "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
