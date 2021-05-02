@@ -1,0 +1,11 @@
+---
+application:
+  name: "movies-vidly"
+  project: "test"
+  organization: "QoveryCommunity"
+routers:
+- name: "main-movies-vidly"
+  routes:
+  - application_name: "movies-vidly"
+    paths:
+    - "/*"
